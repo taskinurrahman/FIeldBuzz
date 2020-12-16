@@ -2,10 +2,11 @@ from django.shortcuts import render,redirect
 from .models import Password
 import requests
 import json
+import uuid
 
 
 # Create your views here.
-
+#log in api call
 def login_view(request):
     if request.method == 'POST':
         data= request.POST
@@ -23,7 +24,7 @@ def login_view(request):
     
 
 def home(request):
-    #log in api call
+    #data submission api
     
     if request.method == 'POST':
         obj= request.POST
@@ -33,6 +34,7 @@ def home(request):
 
         url = "https://recruitment.fisdev.com/api/v1/recruiting-entities/"
         payload = {
+        "tsync_id":f"{uuid.uuid4()}",
         "name": mydict['username'],
         "email": "taskin.cse14@gmail.com",
         "phone": mydict['phone'],
@@ -47,10 +49,9 @@ def home(request):
         "field_buzz_reference": mydict['reference'],
         "github_project_url": mydict['github'],
         "cv_file": {
-        "tsync_id": "be96f0e188a6de73b186c043-7365-4605-85eb-76021f16803f"
+        "tsync_id": f"{uuid.uuid4()}",
             }
         }
-        #data submission api
         result_token = str('Token')+" "+ str(Password.objects.get(id=1))
         headers = {'content-type': 'application/json','Authorization':result_token}
         res = requests.post(url, data= json.dumps(payload), headers=headers)
